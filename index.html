@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let's Protect the River! (For Kids)</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:"Baloo 2",system-ui,sans-serif;color:#1d3557;background:linear-gradient(180deg,#bde0fe 0%,#a2d2ff 45%,#8ecae6 100%);min-height:100vh;overflow-x:hidden}
+.wrap{max-width:640px;margin:0 auto;padding:14px 14px 30px}
+.card{background:#fff;border-radius:28px;padding:20px;box-shadow:0 8px 0 rgba(29,53,87,.15);text-align:center;position:relative}
+h1{font-size:clamp(2rem,8vw,2.8rem);margin:4px 0;color:#e76f51;line-height:1}
+.big{font-size:clamp(1.35rem,5.5vw,1.8rem);line-height:1.3;margin:10px 0}
+.mascot{font-size:5rem;display:inline-block;animation:swim 2.5s ease-in-out infinite}
+@keyframes swim{0%,100%{transform:translateX(-10px) rotate(-5deg)}50%{transform:translateX(10px) rotate(5deg)}}
+.btn{font-family:inherit;font-weight:800;font-size:1.6rem;border:0;border-radius:22px;padding:14px 34px;background:#f4a261;color:#fff;cursor:pointer;box-shadow:0 6px 0 #c9773a;margin-top:8px}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #c9773a}
+.speak{position:absolute;top:12px;right:12px;font-size:1.8rem;border:0;background:#ffe8a3;border-radius:50%;width:56px;height:56px;cursor:pointer;box-shadow:0 4px 0 #e0c060}
+.speak:active{transform:translateY(3px);box-shadow:none}
+.dots{display:flex;justify-content:center;gap:8px;margin:0 0 12px}
+.dots i{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.6)}
+.dots i.done{background:#ffd166}
+.dots i.now{background:#fff;outline:3px solid #f4a261}
+.scene{font-size:4.2rem;line-height:1.1;margin:6px 0 2px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.ch{font-family:inherit;border:5px solid #e3eefc;background:#f6fbff;border-radius:26px;padding:14px 8px;cursor:pointer;transition:transform .15s}
+.ch:active{transform:scale(.95)}
+.ch .pic{font-size:4.2rem;line-height:1.1}
+.ch .lbl{font-size:1.3rem;font-weight:800;color:#1d3557;margin-top:6px;line-height:1.2}
+.ch.right{border-color:#2a9d8f;background:#e3f7f3;animation:jump .5s}
+.ch.wrong{border-color:#e76f51;background:#fdecea;animation:shake .4s}
+@keyframes jump{30%{transform:scale(1.08)}60%{transform:scale(.97)}}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.fb{font-size:1.45rem;font-weight:800;margin-top:14px;min-height:2em;line-height:1.25}
+.fb.ok{color:#2a9d8f}.fb.no{color:#e76f51}
+.hidden{display:none!important}
+.credit{text-align:center;margin-top:18px;font-size:1rem;font-weight:600;color:#1d3557;background:rgba(255,255,255,.55);display:table;margin-left:auto;margin-right:auto;padding:6px 16px;border-radius:99px}
+.stars{font-size:3.4rem;letter-spacing:6px}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rules div{background:#fff6e5;border-radius:20px;padding:10px}
+.rules .e{font-size:2.8rem}
+.rules .t{font-size:1.15rem;font-weight:800;line-height:1.2}
+.note{font-family:system-ui,sans-serif;font-size:.85rem;color:#5c6f82;margin-top:14px}
+.conf{position:fixed;top:-40px;font-size:1.8rem;pointer-events:none;animation:fall linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.bubbles span{position:fixed;bottom:-30px;border-radius:50%;background:rgba(255,255,255,.45);animation:rise linear infinite;z-index:-1}
+@keyframes rise{to{transform:translateY(-110vh)}}
+</style>
+</head>
+<body>
+<div class="bubbles" id="bubbles"></div>
+<div class="wrap">
+
+  <!-- MULAI -->
+  <section id="start" class="card">
+    <button class="speak" data-say="Hello! I am Kiki the fish. Let's take care of the river together. Press the play button!" aria-label="Listen">🔊</button>
+    <div class="mascot">🐟</div>
+    <h1>Let's Protect the River!</h1>
+    <p class="big">Hello! I'm <b>Kiki the Fish</b>.<br>Help me take care of the river!</p>
+    <button class="btn" id="go">▶ Play</button>
+    <p class="note">For parents/teachers: tap 🔊 to hear each question read aloud. Please play together with your child.</p>
+  </section>
+
+  <!-- SOAL -->
+  <section id="quiz" class="hidden">
+    <div class="dots" id="dots"></div>
+    <div class="card">
+      <button class="speak" id="sayQ" aria-label="Listen to the question">🔊</button>
+      <div class="scene" id="scene"></div>
+      <p class="big" id="q"></p>
+      <div class="choices" id="choices"></div>
+      <div class="fb" id="fb"></div>
+      <button class="btn hidden" id="next">Next ▶</button>
+    </div>
+  </section>
+
+  <!-- SELESAI -->
+  <section id="end" class="card hidden">
+    <button class="speak" data-say="Great job! You are a Little River Guardian! Remember: don't eat dead fish, don't touch them, tell a grown-up, and wash your hands with soap." aria-label="Listen">🔊</button>
+    <div class="mascot">🐟</div>
+    <h1>Great Job!</h1>
+    <div class="stars" id="stars"></div>
+    <p class="big">You are a <b>Little River Guardian</b> 🏅</p>
+    <p class="big" style="margin-bottom:0">If you see a dead fish, remember:</p>
+    <div class="rules">
+      <div><div class="e">🚫🍽️</div><div class="t">Don't eat it</div></div>
+      <div><div class="e">🚫✋</div><div class="t">Don't touch it</div></div>
+      <div><div class="e">🗣️👨‍👩‍👧</div><div class="t">Tell a grown-up</div></div>
+      <div><div class="e">🧼👐</div><div class="t">Wash hands with soap</div></div>
+    </div>
+    <button class="btn" id="again" style="margin-top:18px">🔁 Play Again</button>
+  </section>
+
+  <footer class="credit">Developed by: <b>Arya Nugraha</b></footer>
+
+</div>
+
+<script>
+const Q=[
+ {sc:"🏞️🐟💀",q:"There is a dead fish in the river. Can we eat it?",
+  ok:{p:"🙅",l:"Don't eat it"}, no:{p:"🍽️",l:"Eat it"},
+  yes:"That's right! Dead fish can make your tummy sick.", nope:"Oops! Dead fish can make your tummy sick. Try again!"},
+ {sc:"🐟💀👀",q:"You see a dead fish. What do you do?",
+  ok:{p:"🗣️👩",l:"Call Mom or Dad"}, no:{p:"✋",l:"Touch it myself"},
+  yes:"Smart! Let a grown-up take care of it.", nope:"Wait! Don't touch it, it has germs. Try again!"},
+ {sc:"🏊‍♂️🏞️",q:"Your friend wants to swim in that river. What do you say?",
+  ok:{p:"🏠⚽",l:"Let's play at home"}, no:{p:"🏊",l:"Go swimming"},
+  yes:"Great! The water may be dirty, so no swimming for now.", nope:"Hmm, the water may be dirty. Try again!"},
+ {sc:"🐱🐟💀",q:"Your cat wants to eat the dead fish. What do you do?",
+  ok:{p:"🐱🚫",l:"Keep the cat away"}, no:{p:"😺🍽️",l:"Let it eat"},
+  yes:"You love your cat! Cats can get sick too.", nope:"Oh no, the cat could get sick. Try again!"},
+ {sc:"🤔💭",q:"Who should you tell?",
+  ok:{p:"👨‍👩‍👧👩‍🏫",l:"Mom, Dad, or Teacher"}, no:{p:"🤫",l:"Tell no one"},
+  yes:"Yes! Grown-ups will call the helpers.", nope:"Don't keep it a secret. Tell a grown-up! Try again."},
+ {sc:"🏃‍♀️🏡🍪",q:"After playing outside, you want a cookie. What first?",
+  ok:{p:"🧼👐",l:"Wash hands with soap"}, no:{p:"🍪",l:"Eat right away"},
+  yes:"So clean! Soap washes germs away.", nope:"Your hands still have germs. Try again!"}
+];
+const $=id=>document.getElementById(id);
+let i=0, firstTry=0, tried=false, ac=null;
+
+// suara bacaan (jika tersedia di perangkat)
+function say(t){
+  try{
+    if(!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang='en-US'; u.rate=.9; u.pitch=1.2;
+    const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith('en'));
+    if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+// bunyi ting / tuing
+function tone(good){
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const notes=good?[523,659,784]:[330,262];
+    notes.forEach((f,k)=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.type=good?'triangle':'sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(.18,ac.currentTime+k*.12);
+      g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+k*.12+.25);
+      o.connect(g).connect(ac.destination);
+      o.start(ac.currentTime+k*.12); o.stop(ac.currentTime+k*.12+.3);
+    });
+  }catch(e){}
+}
+function confetti(n){
+  const em=['⭐','🐟','💧','🌟','🎉'];
+  for(let k=0;k<n;k++){
+    const s=document.createElement('span');
+    s.className='conf'; s.textContent=em[k%em.length];
+    s.style.left=Math.random()*100+'vw';
+    s.style.animationDuration=(1.8+Math.random()*1.6)+'s';
+    s.style.animationDelay=(Math.random()*.4)+'s';
+    document.body.appendChild(s); setTimeout(()=>s.remove(),4000);
+  }
+}
+function dots(){
+  $('dots').innerHTML=Q.map((_,k)=>'<i class="'+(k<i?'done':k===i?'now':'')+'"></i>').join('');
+}
+function show(){
+  const d=Q[i]; tried=false;
+  dots();
+  $('scene').textContent=d.sc; $('q').textContent=d.q;
+  $('fb').textContent=''; $('fb').className='fb'; $('next').classList.add('hidden');
+  const opts=Math.random()<.5?[[d.ok,1],[d.no,0]]:[[d.no,0],[d.ok,1]];
+  $('choices').innerHTML='';
+  opts.forEach(([o,good])=>{
+    const b=document.createElement('button');
+    b.className='ch'; b.innerHTML='<div class="pic">'+o.p+'</div><div class="lbl">'+o.l+'</div>';
+    b.onclick=()=>pick(b,good);
+    $('choices').appendChild(b);
+  });
+  $('sayQ').onclick=()=>say(d.q+' Choose: '+opts[0][0].l+', or, '+opts[1][0].l);
+}
+function pick(b,good){
+  const d=Q[i];
+  if(b.classList.contains('right')) return;
+  if(good){
+    if(!tried) firstTry++;
+    document.querySelectorAll('.ch').forEach(x=>x.disabled=true);
+    b.classList.add('right');
+    $('fb').className='fb ok'; $('fb').textContent='🎉 '+d.yes;
+    tone(true); confetti(14); say(d.yes);
+    $('next').textContent=i===Q.length-1?'Finish 🏁':'Next ▶';
+    $('next').classList.remove('hidden');
+  }else{
+    tried=true;
+    b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+    $('fb').className='fb no'; $('fb').textContent='🙈 '+d.nope;
+    tone(false); say(d.nope);
+  }
+}
+function start(){
+  i=0; firstTry=0;
+  $('start').classList.add('hidden'); $('end').classList.add('hidden'); $('quiz').classList.remove('hidden');
+  show();
+}
+function next(){
+  i++;
+  if(i<Q.length){ show(); return; }
+  $('quiz').classList.add('hidden'); $('end').classList.remove('hidden');
+  const s=firstTry>=5?3:firstTry>=3?2:1;
+  $('stars').textContent='⭐'.repeat(s)+'☆'.repeat(3-s);
+  confetti(40); tone(true);
+}
+document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(b.dataset.say));
+$('go').onclick=start; $('again').onclick=start; $('next').onclick=next;
+try{speechSynthesis.getVoices()}catch(e){}
+// gelembung latar
+for(let k=0;k<12;k++){
+  const s=document.createElement('span'); const z=10+Math.random()*30;
+  s.style.width=s.style.height=z+'px'; s.style.left=Math.random()*100+'vw';
+  s.style.animationDuration=(8+Math.random()*10)+'s'; s.style.animationDelay=(-Math.random()*15)+'s';
+  $('bubbles').appendChild(s);
+}
+</script>
+</body>
+</html>
